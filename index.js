@@ -1,15 +1,16 @@
 const main = document.getElementById('main');
-const addUserBtn = document.getElementById('add-user');
+const addCharacterBtn = document.getElementById('add-character');
 const doubleBtn = document.getElementById('double');
-const showMillionairesBtn = document.getElementById('show-millionaires');
+const showShortestBtn = document.getElementById('show-shortest');
 const sortBtn = document.getElementById('sort');
-const calculateWealthBtn = document.getElementById('calculate-wealth');
+const calculateHeightBtn = document.getElementById('calculate-height');
 
 let data = [];
 
-for (let numUsers=0; numUsers<3; numUsers++){
-    getRandomUser();
+for (let numUsers=0; numUsers<1; numUsers++){
+    getRandomCharacter();
 }
+
 
 
 // getRandomUser();
@@ -18,69 +19,58 @@ for (let numUsers=0; numUsers<3; numUsers++){
 
 // Fetch a random user from the API and add their wealth from the data
 // returned from the API call
-async function getRandomUser() {
+async function getRandomCharacter() {
     const res = await fetch('https://swapi.dev/api/people');
-    const data = await res.json();
-    console.log(data);
-   console.log(data.results);
-   // console.log(data.results.forEach(character => console.log(character)));
-   // console.log(data.results.forEach(character => console.log(character.name)));
-  for (let character of data.results) {
-       console.log(character.name);
-      let newCharacter = {
-          name: character.name,
-          height: character.height,
-      }
-      console.log(newCharacter);
-      addData(newCharacter);
-   }
+    const resData = await res.json();
+    console.log(resData);
+    console.log(resData.results);
 
-
-    // const user = data.results.forEach(character => character);
-
-    // const newUser = {
-    //     name: user.name,
-    //     money: Math.floor(Math.random() * 1000000)
-    // };
-
-
+        let characters = resData.results;
+        try {
+            const character = characters[ data.length ];
+            console.log(character);
+            let newCharacter = {
+                name: character.name,
+                height: character.height,
+            }
+            addData(newCharacter);
+        } catch (e) {
+            alert("There are no more characters to add")
+        }
 
 }
 
 //Function that will double the money using the map method
-function doubleMoney() {
+function doubleHeight() {
     data = data.map((user) => {
-        return{...user, money: user.money * 2}
+        return{...user, height: user.height * 2}
     });
     updateDOM();
 }
 
 //Function that will sort users by richest using the sort method
-function sortByRichest() {
+function sortByTallest() {
     data.sort((a, b) => {
-        return   b.money - a.money;
+        return   b.height - a.height;
     });
     updateDOM();
 }
 
 //Function that will filter out the millionaires using the filter method
-function showMillionaires() {
+function showShortest() {
     data = data.filter((user) => {
-        return user.money > 1000000
+        return user.height < 100
     });
     updateDOM();
 }
 
 
 //function that adds the total wealth using the reduce method
-function totalWealth() {
-    // const wealth = data.reduce((acc, user) => {
-    //     return acc += user.money
-    // },0);
+function totalHeight() {
 
-    let totalWealth = 0;
+    let totalHeight = 0;
     for (const user of data){
-        totalWealth+= user.money;
+        totalHeight+= user.height;
     }
 
 
@@ -88,7 +78,7 @@ function totalWealth() {
     // wealthEl.innerHTML = `<h3>Total Wealth: <strong> ${formatMoney(wealth)}</strong></h3>`;
     // main.appendChild(wealthEl);
 
-    main.innerHTML += `<div><h3>Total Wealth: <strong> ${formatMoney(totalWealth)}</strong></h3></div>`;
+    main.innerHTML += `<div><h3>Total Height: <strong> ${totalHeight}</strong></h3></div>`;
 }
 
 
@@ -103,7 +93,7 @@ function addData(obj) {
 //updating the DOM forEach method
 function updateDOM(providedData = data) {
     //Clear main div
-    main.innerHTML = `<h2><strong>Person</strong>Wealth</h2>`;
+    main.innerHTML = `<h2><strong>Person</strong>Height</h2>`;
     providedData.forEach((item) => {
         const element = document.createElement('div');
         element.classList.add('person');
@@ -113,14 +103,11 @@ function updateDOM(providedData = data) {
 }
 
 
-//Format the number as money
-// function formatMoney(number) {
-//     return '$' + number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-// }
+
 
 //Event Listener for add user button
-addUserBtn.addEventListener('click', getRandomUser);
-doubleBtn.addEventListener('click', doubleMoney);
-sortBtn.addEventListener('click', sortByRichest);
-showMillionairesBtn.addEventListener('click', showMillionaires);
-calculateWealthBtn.addEventListener('click', totalWealth );
+addCharacterBtn.addEventListener('click', getRandomCharacter);
+doubleBtn.addEventListener('click', doubleHeight);
+sortBtn.addEventListener('click', sortByTallest);
+showShortestBtn.addEventListener('click', showShortest);
+calculateHeightBtn.addEventListener('click', totalHeight );

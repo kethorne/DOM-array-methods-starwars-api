@@ -70,7 +70,7 @@ function totalHeight() {
 
     let totalHeight = 0;
     for (const user of data){
-        totalHeight+= user.height;
+        totalHeight+= parseInt(user.height);
     }
 
 
